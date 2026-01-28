@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # Test PostgreSQL Database (isolated from development)
+  test-db:
+    image: postgres:15-alpine
+    container_name: mvc-musings-test-db
+    restart: on-failure
+    environment:
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_DB: mvc_musings_test_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - test_postgres_data:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Test Application Instance
+  test-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: mvc-musings-test-app
+    restart: on-failure
+    ports:
+      - "3002:3001"
+    environment:
+      DB_NAME: mvc_musings_test_db
+      DB_USER: test_user
+      DB_PASSWORD: test_password
+      DB_HOST: test-db
+      DB_PORT: 5432
+      SESSION_SECRET: test-session-secret
+      NODE_ENV: test
+    depends_on:
+      test-db:
+        condition: service_healthy
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    command: sh -c "npm run seed && npm test"
+
+volumes:
+  test_postgres_data:
+    driver: local

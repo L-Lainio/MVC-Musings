@@ -16,59 +16,123 @@
 ---
 
 ## 📖 Overview
-**Branching Logic** is a developer-focused blog repository that dives deep into **software architecture**, **design patterns**, and modern development practices. Starting with the **MVC framework**, this repo serves as a resource for tutorials, examples, and insights for scalable and maintainable applications.
-
----
-
-## 🌐 What is MVC?
-The **Model-View-Controller (MVC)** framework is an architectural pattern that separates an application into three main components:  
-- **Model** – Handles data and business logic  
-- **View** – Manages UI and presentation  
-- **Controller** – Acts as an intermediary between Model and View  
-
-Originally designed for desktop GUIs, MVC is now widely used in **web development** and **mobile apps** for creating scalable, testable projects.
+**MVC-Musings** is a full-stack web application built using the Model-View-Controller architectural pattern. This project demonstrates modern web development practices with Node.js, Express, Handlebars templating, and PostgreSQL database integration with user authentication and session management.
 
 ---
 
 ## 🛠 Tech Stack
-This project uses:
 - **Express.js** – Web framework for Node.js  
 - **Node.js & NPM** – JavaScript runtime and package manager  
 - **Handlebars.js** – Templating engine for dynamic views  
-- **PostgreSQL & SQLite** – Database options for persistence  
+- **PostgreSQL** – Relational database with Sequelize ORM  
 - **bcrypt** – Secure password hashing  
-- **express-session** – Session management (stores session data in cookies)  
-- **connect-session-sqlite** – SQLite-based session store for Express  
+- **express-session** – Session management middleware  
+- **connect-session-sequelize** – PostgreSQL-backed session store  
+- **Docker** – Containerization for development and testing
 
 ---
 
 ## ✨ Features
 - MVC architecture for clean separation of concerns  
-- Secure authentication with **bcrypt**  
-- Session management using **express-session** and **connect-session-sqlite**  
+- User authentication and authorization with **bcrypt**  
+- Persistent sessions using **express-session** with PostgreSQL storage  
 - Dynamic views powered by **Handlebars.js**  
-- PostgreSQL or SQLite for flexible data storage  
-
----
-
-## 🧩 Components of MVC
-### **Controller**
-- Interprets user input  
-- Updates Model  
-- Selects and renders View  
-
-### **View**
-- Displays data from Controller  
-- Handles UI rendering  
-
-### **Model**
-- Manages data and business rules  
-- Handles CRUD operations  
+- RESTful API routes for user and project management  
+- Docker support for consistent development and testing environments
+- Isolated sandbox environment for testing
 
 ---
 
 ## 🚀 Getting Started
+
+### Prerequisites
+- Node.js (v14 or higher)
+- PostgreSQL (v12 or higher) OR Docker
+
+### Local Development
+
 Clone the repository:
 ```bash
-git clone https://github.com/yourusername/branching-logic.git
-``
+git clone https://github.com/yourusername/MVC-Musings.git
+cd MVC-Musings/Main
+```
+
+Install dependencies:
+```bash
+npm install
+```
+
+Create a `.env` file in the Main directory:
+```env
+DB_NAME=mvc_musings_db
+DB_USER=your_username
+DB_PASSWORD=your_password
+SESSION_SECRET=your_secret_key
+```
+
+Set up the database:
+```bash
+# Create database using schema
+psql -U postgres -f db/schema.sql
+
+# Seed the database
+npm run seed
+```
+
+Start the application:
+```bash
+npm start
+```
+
+Visit `http://localhost:3001` in your browser.
+
+### Docker Development
+
+Build and run with Docker Compose:
+```bash
+docker-compose up --build
+```
+
+The application will be available at `http://localhost:3001`
+
+### Testing Sandbox
+
+Run tests in an isolated sandbox environment:
+```bash
+docker-compose -f docker-compose.test.yml up --build
+```
+
+This creates a separate PostgreSQL instance for testing without affecting your development data.
+
+---
+
+## 📁 Project Structure
+
+```
+Main/
+├── config/          # Database connection configuration
+├── controllers/     # Route handlers (MVC Controllers)
+├── models/          # Sequelize models (MVC Models)
+├── views/           # Handlebars templates (MVC Views)
+├── public/          # Static assets (CSS, JS)
+├── utils/           # Helper functions and middleware
+├── seeds/           # Database seed data
+└── server.js        # Application entry point
+```
+
+---
+
+## 🔐 Authentication
+- User passwords are hashed using bcrypt
+- Sessions are stored in PostgreSQL via connect-session-sequelize
+- Protected routes require authentication via middleware
+
+---
+
+## 🤝 Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+---
+
+## 📝 License
+This project is licensed under the ISC License - see the [LICENSE](LICENSE) file for details.
